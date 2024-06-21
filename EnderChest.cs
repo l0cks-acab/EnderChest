@@ -7,7 +7,7 @@ using Oxide.Game.Rust.Cui; // Add this namespace for CUI
 
 namespace Oxide.Plugins
 {
-    [Info("EnderChest", "herbs.acab", "1.1.0")]
+    [Info("EnderChest", "herbs.acab", "1.2.0")]
     [Description("Provides a personal storage space for players accessible from anywhere.")]
 
     public class EnderChest : RustPlugin
@@ -29,6 +29,7 @@ namespace Oxide.Plugins
         }
 
         private EnderChestConfig config;
+        private const string permissionUse = "enderchest.use";
 
         protected override void LoadDefaultConfig()
         {
@@ -51,6 +52,8 @@ namespace Oxide.Plugins
         {
             LoadConfigValues();
             storedData = Interface.Oxide.DataFileSystem.ReadObject<StoredData>("EnderChest");
+
+            permission.RegisterPermission(permissionUse, this);
         }
 
         void OnServerSave()
@@ -71,6 +74,12 @@ namespace Oxide.Plugins
         [ChatCommand("enderchest")]
         void OpenEnderChest(BasePlayer player)
         {
+            if (!permission.UserHasPermission(player.UserIDString, permissionUse))
+            {
+                player.ChatMessage("You do not have permission to use the Ender Chest.");
+                return;
+            }
+
             if (!storedData.PlayerInventories.ContainsKey(player.userID))
             {
                 storedData.PlayerInventories[player.userID] = new List<Item>();
