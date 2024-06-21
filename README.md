@@ -39,3 +39,4 @@ After the first run, a configuration file named `EnderChest.json` will be create
   "Number of Slots": 36,
   "UI Title": "Ender Chest"
 }
+```
